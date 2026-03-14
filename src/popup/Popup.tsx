@@ -54,19 +54,31 @@ function useTabStatus(): StatusState {
   return state
 }
 
+function BrandMark() {
+  return (
+    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-100 bg-white/90 shadow-[0_10px_24px_rgba(16,185,129,0.16)]">
+      <div className="h-5 w-5 rounded-full bg-emerald-500/20" />
+      <div className="absolute h-6 w-3 -rotate-45 rounded-full bg-emerald-600" />
+      <div className="absolute h-3 w-3 translate-x-2 translate-y-1 rounded-full bg-emerald-300" />
+    </div>
+  )
+}
+
 // ---------------------------------------------------------------------------
 // Sub-components
 // ---------------------------------------------------------------------------
 
 function Header() {
   return (
-    <div className="flex items-center gap-2 mb-4">
-      <span className="text-2xl" aria-hidden="true">
-        🌿
-      </span>
-      <div>
-        <h1 className="text-base font-bold text-emerald-800 leading-tight">EcoOffset</h1>
-        <p className="text-xs text-gray-500 leading-tight">Sustainable shopping assistant</p>
+    <div className="relative overflow-hidden rounded-3xl border border-emerald-100/90 bg-[linear-gradient(145deg,#f8fffb_0%,#f0fbf4_48%,#e7f6ee_100%)] px-4 py-4 shadow-[0_18px_44px_rgba(6,95,70,0.10)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[radial-gradient(circle_at_top,rgba(52,211,153,0.22),transparent_68%)]" />
+      <div className="relative flex items-center gap-3">
+        <BrandMark />
+        <div className="min-w-0">
+          <p className="mb-1 text-[0.62rem] font-semibold uppercase tracking-[0.18em] text-emerald-700/60">Browser Extension</p>
+          <h1 className="text-[1.7rem] font-semibold leading-none text-emerald-950">EcoOffset</h1>
+          <p className="mt-2 text-sm leading-5 text-slate-600">Sustainable shopping assistant</p>
+        </div>
       </div>
     </div>
   )
@@ -75,39 +87,42 @@ function Header() {
 function StatusBadge({ status, platformName }: { status: TabStatus; platformName?: string }) {
   if (status === "loading") {
     return (
-      <div className="flex items-center gap-2 rounded-lg bg-gray-50 border border-gray-200 px-3 py-2 text-sm text-gray-500">
-        <span className="inline-block w-2 h-2 rounded-full bg-gray-300 animate-pulse" />
-        Checking page…
+      <div className="flex items-start gap-3 rounded-[20px] border border-slate-200 bg-white/92 px-4 py-3 text-sm text-slate-600 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+        <span className="mt-1 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-slate-300 animate-pulse" />
+        <span className="leading-6">Checking page...</span>
       </div>
     )
   }
 
   if (status === "supported") {
     return (
-      <div className="flex items-center gap-2 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-2 text-sm text-emerald-800">
-        <span className="inline-block w-2 h-2 rounded-full bg-emerald-500 flex-shrink-0" />
-        <span>
-          Active on <span className="font-semibold">{platformName}</span> — eco suggestions are displayed below product names.
+      <div className="flex items-start gap-3 rounded-[20px] border border-emerald-200/90 bg-[linear-gradient(145deg,rgba(240,253,244,0.98),rgba(220,252,231,0.92))] px-4 py-3 text-sm text-emerald-950 shadow-[0_14px_32px_rgba(16,185,129,0.10)]">
+        <span className="mt-1 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_5px_rgba(16,185,129,0.12)]" />
+        <span className="leading-6">
+          Active on <span className="font-semibold">{platformName}</span> - eco suggestions are displayed below product names.
         </span>
       </div>
     )
   }
 
   return (
-    <div className="flex items-center gap-2 rounded-lg bg-gray-50 border border-gray-200 px-3 py-2 text-sm text-gray-500">
-      <span className="inline-block w-2 h-2 rounded-full bg-gray-400 flex-shrink-0" />
-      <span>Not on a supported shopping page. Navigate to Amazon or eBay to see eco suggestions.</span>
+    <div className="flex items-start gap-3 rounded-[20px] border border-slate-200 bg-white/92 px-4 py-3 text-sm text-slate-600 shadow-[0_10px_28px_rgba(15,23,42,0.05)]">
+      <span className="mt-1 inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-slate-400" />
+      <span className="leading-6">Not on a supported shopping page. Navigate to Amazon or eBay to see eco suggestions.</span>
     </div>
   )
 }
 
 function SupportedSites() {
   return (
-    <div className="mt-4">
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Supported sites</p>
-      <div className="flex gap-2">
+    <div className="rounded-[20px] border border-white/80 bg-white/90 px-4 py-4 shadow-[0_12px_30px_rgba(15,23,42,0.05)]">
+      <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-400">Supported sites</p>
+      <div className="flex flex-wrap gap-2.5">
         {SUPPORTED_PLATFORMS.map((p) => (
-          <span key={p.name} className="px-2 py-1 rounded-md bg-gray-100 text-xs text-gray-600 font-medium">
+          <span
+            key={p.name}
+            className="rounded-full border border-emerald-100 bg-[linear-gradient(145deg,#fbfffd,#f0faf5)] px-3 py-1.5 text-xs font-semibold text-emerald-800"
+          >
             {p.name}
           </span>
         ))}
@@ -118,14 +133,17 @@ function SupportedSites() {
 
 function HowItWorks() {
   const steps = ["Open any product page on a supported site", "Look for the green eco badge below the product title", "Click it to see eco-friendly alternatives and tips"]
+
   return (
-    <div className="mt-4">
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">How it works</p>
-      <ol className="space-y-1">
+    <div className="rounded-[20px] border border-white/80 bg-white/90 px-4 py-4 shadow-[0_12px_30px_rgba(15,23,42,0.05)]">
+      <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-400">How it works</p>
+      <ol className="space-y-2.5">
         {steps.map((step, i) => (
-          <li key={step} className="flex items-start gap-2 text-xs text-gray-600">
-            <span className="flex-shrink-0 w-4 h-4 rounded-full bg-emerald-100 text-emerald-700 font-bold flex items-center justify-center text-[10px]">{i + 1}</span>
-            {step}
+          <li key={step} className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/85 px-3 py-2.5 text-sm leading-5 text-slate-600">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">
+              {i + 1}
+            </span>
+            <span>{step}</span>
           </li>
         ))}
       </ol>
@@ -141,11 +159,15 @@ export default function Popup() {
   const { status, platformName } = useTabStatus()
 
   return (
-    <div className="w-72 p-4 bg-white font-sans">
-      <Header />
-      <StatusBadge status={status} platformName={platformName} />
-      <SupportedSites />
-      <HowItWorks />
+    <div className="w-90 bg-[radial-gradient(circle_at_top,#f6fff9_0%,#eef9f3_44%,#e7f3ec_100%)] p-3 font-sans text-slate-800">
+      <div className="rounded-[28px] border border-white/80 bg-white/55 p-3 shadow-[0_24px_64px_rgba(6,78,59,0.12)] backdrop-blur-xl">
+        <div className="space-y-3">
+          <Header />
+          <StatusBadge status={status} platformName={platformName} />
+          <SupportedSites />
+          <HowItWorks />
+        </div>
+      </div>
     </div>
   )
 }
