@@ -2,9 +2,21 @@
   "manifest_version": 3,
   "name": "EcoOffset",
   "version": "1.0.0",
-  "description": "EcoOffset Chrome Extension",
+  "description": "EcoOffset - Make sustainable choices while shopping online",
   "action": {
     "default_popup": "popup/index.html",
     "default_title": "EcoOffset"
-  }
+  },
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["*://*.amazon.com/*", "*://*.amazon.ca/*", "*://*.ebay.com/*", "*://*.ebay.ca/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.com/*", "*://*.amazon.ca/*", "*://*.ebay.com/*", "*://*.ebay.ca/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
 }
