@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "EcoOffset",
+  "version": "1.0.0",
+  "description": "EcoOffset Chrome Extension",
+  "action": {
+    "default_popup": "popup/index.html",
+    "default_title": "EcoOffset"
+  }
+}
