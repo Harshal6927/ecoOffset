@@ -1,5 +1,5 @@
 /**
- * Eco Badge — compact widget injected below the product title.
+ * Eco Badge 鈥?compact widget injected below the product title.
  *
  * Rendered inside a Shadow DOM root so Amazon/eBay page styles cannot
  * interfere with our UI and our styles cannot break their pages.
@@ -15,10 +15,10 @@ import type { AnalysisResult } from "../types"
 /**
  * Maps an average eco score to a severity level.
  *
- * Thresholds (0–100, lower = better):
- *   ≤ 40  → "low"    (green)
- *   ≤ 65  → "medium" (amber)
- *   > 65  → "high"   (red)
+ * Thresholds (0鈥?00, lower = better):
+ *   鈮?40  鈫?"low"    (green)
+ *   鈮?65  鈫?"medium" (amber)
+ *   > 65  鈫?"high"   (red)
  *
  * These same thresholds are used in detail-panel.ts (`scoreColor`).
  * If you change them here, update that function too.
@@ -48,44 +48,61 @@ const BASE_STYLES = `
   :host {
     all: initial;
     display: block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     font-size: 13px;
     line-height: 1.4;
   }
   .badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    margin: 6px 0;
-    padding: 5px 10px;
-    border-radius: 20px;
-    border: 1px solid #d1d5db;
-    background: #f9fafb;
+    gap: 10px;
+    margin: 8px 0;
+    padding: 7px 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(209, 213, 219, 0.9);
+    background: linear-gradient(145deg, #ffffff, #f3f8f5);
     cursor: pointer;
     user-select: none;
-    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow:
+      0 10px 24px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255,255,255,0.85);
+    transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
   }
   .badge:hover {
-    background: #f3f4f6;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+    background: linear-gradient(145deg, #ffffff, #eefbf4);
+    box-shadow:
+      0 14px 28px rgba(15, 23, 42, 0.12),
+      inset 0 1px 0 rgba(255,255,255,0.92);
+    transform: translateY(-1px);
   }
   .score-pill {
     display: inline-block;
-    padding: 1px 8px;
-    border-radius: 10px;
+    padding: 3px 9px;
+    border-radius: 999px;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
     white-space: nowrap;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
   }
   .label {
-    color: #374151;
+    color: #334155;
     font-size: 12px;
+    font-weight: 600;
   }
   .leaf {
-    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    background: linear-gradient(145deg, #ecfdf5, #dcfce7);
+    color: #047857;
+    font-size: 13px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
   }
   .caret {
-    color: #9ca3af;
+    color: #94a3b8;
     font-size: 10px;
     margin-left: 2px;
   }
@@ -140,7 +157,7 @@ export class EcoBadge {
     this.shadowRoot.appendChild(badge)
   }
 
-  /** The host element — insert this into the DOM. */
+  /** The host element 鈥?insert this into the DOM. */
   get element(): HTMLElement {
     return this.host
   }

@@ -1,5 +1,5 @@
 /**
- * Detail Panel — expanded eco-impact view shown when the user clicks the badge.
+ * Detail Panel 鈥?expanded eco-impact view shown when the user clicks the badge.
  *
  * Also rendered inside a Shadow DOM root for style isolation.
  *
@@ -18,191 +18,242 @@ const PANEL_STYLES = `
   :host {
     all: initial;
     display: block;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Segoe UI", "Inter", "Helvetica Neue", Arial, sans-serif;
     font-size: 13px;
-    line-height: 1.5;
-    color: #111827;
+    line-height: 1.55;
+    color: #10231d;
   }
 
   .overlay {
     position: fixed;
     top: 0; right: 0; bottom: 0; left: 0;
-    background: rgba(0,0,0,0.35);
+    background:
+      linear-gradient(180deg, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0.28)),
+      rgba(6, 78, 59, 0.12);
+    backdrop-filter: blur(8px);
     /* 2147483646 = INT_MAX - 1, the highest z-index reliably supported across
        browsers. Keeps the overlay on top of any host-page stacking contexts. */
     z-index: 2147483646;
     display: flex;
     align-items: flex-start;
     justify-content: flex-end;
-    padding: 16px;
+    padding: 20px;
   }
 
   .panel {
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.20);
-    width: 340px;
-    max-height: calc(100vh - 32px);
+    background:
+      linear-gradient(180deg, rgba(255,255,255,0.98), rgba(246,250,248,0.98));
+    border: 1px solid rgba(209, 250, 229, 0.9);
+    border-radius: 24px;
+    box-shadow:
+      0 28px 70px rgba(15, 23, 42, 0.22),
+      0 8px 24px rgba(16, 185, 129, 0.08);
+    width: min(380px, calc(100vw - 40px));
+    max-height: calc(100vh - 40px);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    animation: slideIn 0.18s ease-out;
+    animation: slideIn 0.22s ease-out;
   }
 
   @keyframes slideIn {
-    from { opacity: 0; transform: translateX(20px); }
-    to   { opacity: 1; transform: translateX(0);    }
+    from { opacity: 0; transform: translateX(28px) scale(0.985); }
+    to   { opacity: 1; transform: translateX(0) scale(1); }
   }
 
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 16px 10px;
-    border-bottom: 1px solid #e5e7eb;
+    gap: 12px;
+    padding: 18px 20px 14px;
+    border-bottom: 1px solid rgba(209, 213, 219, 0.78);
     position: sticky;
     top: 0;
-    background: #ffffff;
-    border-radius: 12px 12px 0 0;
+    background:
+      linear-gradient(145deg, rgba(246,255,249,0.97), rgba(236,253,245,0.95));
+    backdrop-filter: blur(18px);
+    border-radius: 24px 24px 0 0;
   }
 
   .header-title {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 10px;
     font-weight: 700;
-    font-size: 15px;
+    font-size: 16px;
+    letter-spacing: 0.01em;
     color: #065f46;
   }
 
   .close-btn {
-    background: none;
-    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(209, 213, 219, 0.9);
     cursor: pointer;
-    font-size: 18px;
+    font-size: 16px;
     color: #6b7280;
-    padding: 0 2px;
     line-height: 1;
-    border-radius: 4px;
+    border-radius: 999px;
+    transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
   }
-  .close-btn:hover { color: #111827; background: #f3f4f6; }
+  .close-btn:hover {
+    color: #10231d;
+    background: #ffffff;
+    transform: translateY(-1px);
+  }
 
-  .body { padding: 12px 16px 16px; }
+  .body { padding: 16px 20px 20px; }
 
   .product-name {
     font-size: 12px;
-    color: #6b7280;
-    margin-bottom: 10px;
-    font-style: italic;
+    color: #5f6f68;
+    margin-bottom: 14px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(248, 250, 252, 0.8);
+    border: 1px solid rgba(226, 232, 240, 0.88);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   .section-title {
-    font-weight: 600;
-    font-size: 12px;
+    font-weight: 700;
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: #6b7280;
-    margin: 14px 0 6px;
+    letter-spacing: 0.12em;
+    color: #7a8b84;
+    margin: 18px 0 8px;
   }
 
   .summary {
     font-size: 13px;
-    color: #374151;
-    margin-bottom: 4px;
+    color: #334155;
+    margin-bottom: 8px;
+    padding: 12px 14px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, #fbfffc, #f2faf6);
+    border: 1px solid rgba(220, 252, 231, 0.95);
   }
 
   /* Score bars */
   .score-row {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin: 5px 0;
+    gap: 10px;
+    margin: 8px 0;
+    padding: 10px 12px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.78);
+    border: 1px solid rgba(226, 232, 240, 0.82);
   }
   .score-label {
-    width: 56px;
+    width: 60px;
     font-size: 12px;
-    color: #374151;
+    font-weight: 600;
+    color: #334155;
     flex-shrink: 0;
   }
   .bar-track {
     flex: 1;
-    height: 8px;
-    background: #e5e7eb;
-    border-radius: 4px;
+    height: 9px;
+    background: #e2e8f0;
+    border-radius: 999px;
     overflow: hidden;
   }
   .bar-fill {
     height: 100%;
-    border-radius: 4px;
+    border-radius: 999px;
     transition: width 0.4s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
   }
   .score-value {
-    width: 26px;
+    width: 46px;
     font-size: 11px;
-    color: #6b7280;
+    font-weight: 600;
+    color: #64748b;
     text-align: right;
     flex-shrink: 0;
   }
 
   /* Alternatives */
   .alt-card {
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
-    border-radius: 8px;
-    padding: 8px 10px;
-    margin: 6px 0;
+    background: linear-gradient(145deg, #f8fffb, #effcf4);
+    border: 1px solid rgba(187, 247, 208, 0.95);
+    border-radius: 18px;
+    padding: 12px 14px;
+    margin: 8px 0;
+    box-shadow: 0 10px 24px rgba(16, 185, 129, 0.08);
   }
   .alt-name {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 13px;
     color: #065f46;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
   }
   .alt-reason {
     font-size: 12px;
-    color: #374151;
-    margin-bottom: 6px;
+    color: #334155;
+    margin-bottom: 8px;
   }
   .alt-link {
     display: inline-block;
     font-size: 12px;
-    color: #2563eb;
+    color: #0f766e;
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 700;
   }
   .alt-link:hover { text-decoration: underline; }
 
   /* Tips */
   .tips-list {
-    margin: 4px 0 0;
-    padding-left: 16px;
+    margin: 6px 0 0;
+    padding: 12px 14px 12px 30px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.82);
+    border: 1px solid rgba(226, 232, 240, 0.84);
   }
   .tips-list li {
     font-size: 12px;
-    color: #374151;
-    margin: 4px 0;
+    color: #334155;
+    margin: 6px 0;
   }
 
   /* Footer */
   .footer {
-    padding: 8px 16px 12px;
-    border-top: 1px solid #e5e7eb;
+    padding: 10px 20px 16px;
+    border-top: 1px solid rgba(229, 231, 235, 0.9);
     font-size: 11px;
-    color: #9ca3af;
+    color: #94a3b8;
     text-align: center;
+    background: rgba(255,255,255,0.65);
+  }
+
+  @media (max-width: 640px) {
+    .overlay {
+      padding: 12px;
+      justify-content: center;
+    }
+
+    .panel {
+      width: 100%;
+      max-height: calc(100vh - 24px);
+    }
   }
 `
 
 /**
- * Returns a fill colour for an individual eco score bar (0–100, lower = better).
+ * Returns a fill colour for an individual eco score bar (0鈥?00, lower = better).
  *
  * Uses the same thresholds as `scoreToLevel` in eco-badge.ts:
- *   ≤ 40 → green (#10b981)
- *   ≤ 65 → amber (#f59e0b)
- *   > 65 → red   (#ef4444)
+ *   鈮?40 鈫?green (#10b981)
+ *   鈮?65 鈫?amber (#f59e0b)
+ *   > 65 鈫?red   (#ef4444)
  *
  * If you change these thresholds, update eco-badge.ts `scoreToLevel` too.
  */
@@ -302,7 +353,7 @@ export class DetailPanel {
 
     // Close on overlay background click.
     // e.target === overlay (not .panel) ensures clicks inside the panel itself
-    // don't dismiss it — only clicks on the dimmed backdrop do.
+    // don't dismiss it 鈥?only clicks on the dimmed backdrop do.
     overlay.addEventListener("click", (e: MouseEvent) => {
       if (e.target === overlay) onClose()
     })
@@ -322,7 +373,7 @@ export class DetailPanel {
     if (e.key === "Escape") onClose()
   }
 
-  /** The host element — append this to <body> to show the panel. */
+  /** The host element 鈥?append this to <body> to show the panel. */
   get element(): HTMLElement {
     return this.host
   }
