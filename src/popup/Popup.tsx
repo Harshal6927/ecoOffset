@@ -12,6 +12,23 @@ import { useEffect, useState } from "react"
 const SUPPORTED_PLATFORMS: { name: string; pattern: RegExp }[] = [
   { name: "Amazon", pattern: /amazon\.[a-z.]+/i },
   { name: "eBay", pattern: /ebay\.[a-z.]+/i },
+  { name: "Walmart", pattern: /walmart\.[a-z.]+/i },
+  { name: "Target", pattern: /target\.[a-z.]+/i },
+  { name: "Best Buy", pattern: /bestbuy\.[a-z.]+/i },
+  { name: "Costco", pattern: /costco\.[a-z.]+/i },
+  { name: "AliExpress", pattern: /aliexpress\.[a-z.]+/i },
+  { name: "Temu", pattern: /temu\.[a-z.]+/i },
+  { name: "Shein", pattern: /shein\.[a-z.]+/i },
+  { name: "Wayfair", pattern: /wayfair\.[a-z.]+/i },
+  { name: "IKEA", pattern: /ikea\.[a-z.]+/i },
+  { name: "Home Depot", pattern: /homedepot\.[a-z.]+/i },
+  { name: "Lowe's", pattern: /lowes\.[a-z.]+/i },
+  { name: "Etsy", pattern: /etsy\.[a-z.]+/i },
+  { name: "Alibaba", pattern: /alibaba\.[a-z.]+/i },
+  { name: "Newegg", pattern: /newegg\.[a-z.]+/i },
+  { name: "Apple Store", pattern: /apple\.[a-z.]+/i },
+  { name: "B&H Photo", pattern: /bhphotovideo\.[a-z.]+/i },
+  { name: "Micro Center", pattern: /microcenter\.[a-z.]+/i },
 ]
 
 type TabStatus = "loading" | "supported" | "unsupported"
@@ -119,10 +136,7 @@ function SupportedSites() {
       <p className="mb-3 text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-slate-400">Supported sites</p>
       <div className="flex flex-wrap gap-2.5">
         {SUPPORTED_PLATFORMS.map((p) => (
-          <span
-            key={p.name}
-            className="rounded-full border border-emerald-100 bg-[linear-gradient(145deg,#fbfffd,#f0faf5)] px-3 py-1.5 text-xs font-semibold text-emerald-800"
-          >
+          <span key={p.name} className="rounded-full border border-emerald-100 bg-[linear-gradient(145deg,#fbfffd,#f0faf5)] px-3 py-1.5 text-xs font-semibold text-emerald-800">
             {p.name}
           </span>
         ))}
@@ -140,9 +154,7 @@ function HowItWorks() {
       <ol className="space-y-2.5">
         {steps.map((step, i) => (
           <li key={step} className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-slate-50/85 px-3 py-2.5 text-sm leading-5 text-slate-600">
-            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">
-              {i + 1}
-            </span>
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-[11px] font-bold text-white">{i + 1}</span>
             <span>{step}</span>
           </li>
         ))}
