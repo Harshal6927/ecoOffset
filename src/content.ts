@@ -5,24 +5,40 @@
  * Responsibilities:
  *  1. Detect the active platform.
  *  2. Wait for the product title element to appear in the DOM.
- *  3. Run the eco analysis.
+ *  3. Request eco analysis from the background service worker.
  *  4. Inject the eco-badge below the product title.
  *  5. Show/hide the detail panel on badge click.
  *
- * To swap in a real LLM-backed analysis service:
- *  - Create a class implementing AnalysisService in src/analysis/
- *  - Replace `new MockAnalysisService()` below with your implementation.
+ * Analysis is delegated to the background service worker via
+ * chrome.runtime.sendMessage so that the LLM fetch to localhost:11434
+ * is not blocked by the page's Content Security Policy.
  */
-import { MockAnalysisService } from "./analysis/mock"
 import { detectPlatform } from "./platforms"
-import type { AnalysisResult } from "./types"
+import type { AnalysisResult, AnalysisResultMessage, AnalyzeProductMessage, ExtensionMessage, Product } from "./types"
 import { DetailPanel } from "./ui/detail-panel"
 import { EcoBadge } from "./ui/eco-badge"
 
 // ---------------------------------------------------------------------------
-// Analysis service — swap this out for an LLM-backed service when ready
+// Analysis via background worker
 // ---------------------------------------------------------------------------
-const analysisService = new MockAnalysisService()
+
+/**
+ * Sends an ANALYZE_PRODUCT message to the background service worker and
+ * returns the AnalysisResult, or null if the worker returns an error or
+ * the message channel fails (e.g. extension reloaded mid-session).
+ */
+async function requestAnalysis(product: Product): Promise<AnalysisResult | null> {
+  try {
+    const message: AnalyzeProductMessage = { type: "ANALYZE_PRODUCT", payload: product }
+    const response = (await chrome.runtime.sendMessage(message)) as ExtensionMessage
+    if (response?.type === "ANALYSIS_RESULT") {
+      return (response as AnalysisResultMessage).payload
+    }
+    return null
+  } catch {
+    return null
+  }
+}
 
 // ---------------------------------------------------------------------------
 // State
@@ -128,8 +144,8 @@ async function main(): Promise<void> {
         if (!name) return
 
         const product = { name, platform: platform.id, url: window.location.href }
-        const result = await analysisService.analyze(product)
-        injectBadge(injectionPoint, result)
+        const result = await requestAnalysis(product)
+        if (result) injectBadge(injectionPoint, result)
       },
     )
     return
@@ -139,8 +155,8 @@ async function main(): Promise<void> {
   if (!injectionPoint) return
 
   const product = { name: productName, platform: platform.id, url: window.location.href }
-  const result = await analysisService.analyze(product)
-  injectBadge(injectionPoint, result)
+  const result = await requestAnalysis(product)
+  if (result) injectBadge(injectionPoint, result)
 }
 
 // Run on initial page load

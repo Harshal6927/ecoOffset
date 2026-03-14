@@ -70,7 +70,7 @@ function BrandMark() {
 
 function Header() {
   return (
-    <div className="relative overflow-hidden rounded-[24px] border border-emerald-100/90 bg-[linear-gradient(145deg,#f8fffb_0%,#f0fbf4_48%,#e7f6ee_100%)] px-4 py-4 shadow-[0_18px_44px_rgba(6,95,70,0.10)]">
+    <div className="relative overflow-hidden rounded-3xl border border-emerald-100/90 bg-[linear-gradient(145deg,#f8fffb_0%,#f0fbf4_48%,#e7f6ee_100%)] px-4 py-4 shadow-[0_18px_44px_rgba(6,95,70,0.10)]">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-[radial-gradient(circle_at_top,rgba(52,211,153,0.22),transparent_68%)]" />
       <div className="relative flex items-center gap-3">
         <BrandMark />
@@ -159,7 +159,7 @@ export default function Popup() {
   const { status, platformName } = useTabStatus()
 
   return (
-    <div className="w-[22.5rem] bg-[radial-gradient(circle_at_top,#f6fff9_0%,#eef9f3_44%,#e7f3ec_100%)] p-3 font-sans text-slate-800">
+    <div className="w-90 bg-[radial-gradient(circle_at_top,#f6fff9_0%,#eef9f3_44%,#e7f3ec_100%)] p-3 font-sans text-slate-800">
       <div className="rounded-[28px] border border-white/80 bg-white/55 p-3 shadow-[0_24px_64px_rgba(6,78,59,0.12)] backdrop-blur-xl">
         <div className="space-y-3">
           <Header />
@@ -167,8 +167,6 @@ export default function Popup() {
           <SupportedSites />
           <HowItWorks />
         </div>
-        {/* TODO: Remove this disclaimer once LLM-backed analysis is wired up. */}
-        <p className="mt-4 text-center text-[10px] tracking-[0.12em] text-slate-400">Mock data - LLM integration coming soon</p>
       </div>
     </div>
   )
