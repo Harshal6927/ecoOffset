@@ -1,1 +1,10 @@
+/*
+ * Popup stylesheet — imported by src/popup/main.tsx.
+ *
+ * Scope: popup window only. Content-script UI (eco-badge, detail-panel) uses
+ * inline styles injected into Shadow DOM roots, not this file.
+ *
+ * All utility classes come from Tailwind v4 via the import below; there are
+ * no custom rules because the popup components use only Tailwind utilities.
+ */
 @import "tailwindcss";
