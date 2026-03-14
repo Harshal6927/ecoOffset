@@ -3,8 +3,20 @@
   "name": "EcoOffset",
   "version": "1.0.0",
   "description": "EcoOffset Chrome Extension",
+  "permissions": ["storage", "activeTab"],
+  "host_permissions": ["*://*.amazon.com/*", "*://*.amazon.in/*"],
   "action": {
     "default_popup": "popup/index.html",
     "default_title": "EcoOffset"
-  }
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.com/*", "*://*.amazon.in/*"],
+      "js": ["content.js"]
+    }
+  ]
 }

@@ -10,11 +10,22 @@ export default defineConfig({
     rollupOptions: {
       input: {
         popup: resolve(__dirname, "popup/index.html"),
+        background: resolve(__dirname, "src/background/index.ts"),
+        content: resolve(__dirname, "src/content/index.ts"),
       },
       output: {
-        entryFileNames: "[name]/[name].js",
-        chunkFileNames: "[name]/[name].js",
-        assetFileNames: "[name]/[name].[ext]",
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === "background") return "background.js"
+          if (chunkInfo.name === "content") return "content.js"
+          return "popup/[name].js"
+        },
+        chunkFileNames: "chunks/[name]-[hash].js",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name && assetInfo.name.endsWith(".css")) {
+            return "assets/[name]"
+          }
+          return "assets/[name].[ext]"
+        },
       },
     },
   },
