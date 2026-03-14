@@ -2,9 +2,7 @@
 
 :root {
   color: #163229;
-  background:
-    radial-gradient(circle at top, rgba(192, 242, 211, 0.9), transparent 34%),
-    linear-gradient(180deg, #f5f0df 0%, #d8eadf 52%, #c3ddd0 100%);
+  background: radial-gradient(circle at top, rgba(192, 242, 211, 0.9), transparent 34%), linear-gradient(180deg, #f5f0df 0%, #d8eadf 52%, #c3ddd0 100%);
   font-family: "Segoe UI", sans-serif;
   line-height: 1.4;
   font-weight: 400;
