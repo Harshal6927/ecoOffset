@@ -8,16 +8,26 @@
  *  See README.md for a full walkthrough.
  */
 
+import { AlibabaPlatform } from "./alibaba"
 import { AliExpressPlatform } from "./aliexpress"
 import { AmazonPlatform } from "./amazon"
+import { ApplePlatform } from "./apple"
 import { BestBuyPlatform } from "./bestbuy"
+import { BhPhotoPlatform } from "./bhphoto"
 import { CostcoPlatform } from "./costco"
 import { EbayPlatform } from "./ebay"
+import { EtsyPlatform } from "./etsy"
+import { HomeDepotPlatform } from "./homedepot"
+import { IkeaPlatform } from "./ikea"
+import { LowesPlatform } from "./lowes"
+import { MicrocenterPlatform } from "./microcenter"
+import { NeweggPlatform } from "./newegg"
 import type { Platform } from "./platform"
 import { SheinPlatform } from "./shein"
 import { TargetPlatform } from "./target"
 import { TemuPlatform } from "./temu"
 import { WalmartPlatform } from "./walmart"
+import { WayfairPlatform } from "./wayfair"
 
 // Re-exported so callers can import Platform from this barrel rather than
 // reaching into the internal platform.ts module.
@@ -34,6 +44,16 @@ const PLATFORMS: Platform[] = [
   new AliExpressPlatform(),
   new TemuPlatform(),
   new SheinPlatform(),
+  new WayfairPlatform(),
+  new IkeaPlatform(),
+  new HomeDepotPlatform(),
+  new LowesPlatform(),
+  new EtsyPlatform(),
+  new AlibabaPlatform(),
+  new NeweggPlatform(),
+  new ApplePlatform(),
+  new BhPhotoPlatform(),
+  new MicrocenterPlatform(),
 ]
 
 /**

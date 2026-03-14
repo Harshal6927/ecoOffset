@@ -23,6 +23,16 @@
     "*://*.aliexpress.com/*",
     "*://*.temu.com/*",
     "*://*.shein.com/*",
+    "*://*.wayfair.ca/*",
+    "*://*.ikea.com/*",
+    "*://*.homedepot.ca/*",
+    "*://*.lowes.com/*",
+    "*://*.etsy.com/*",
+    "*://*.alibaba.com/*",
+    "*://*.newegg.ca/*",
+    "*://*.apple.com/*",
+    "*://*.bhphotovideo.com/*",
+    "*://*.microcenter.com/*",
     "http://localhost:11434/*"
   ],
   "background": {
@@ -44,7 +54,17 @@
         "*://*.costco.ca/*",
         "*://*.aliexpress.com/*",
         "*://*.temu.com/*",
-        "*://*.shein.com/*"
+        "*://*.shein.com/*",
+        "*://*.wayfair.ca/*",
+        "*://*.ikea.com/*",
+        "*://*.homedepot.ca/*",
+        "*://*.lowes.com/*",
+        "*://*.etsy.com/*",
+        "*://*.alibaba.com/*",
+        "*://*.newegg.ca/*",
+        "*://*.apple.com/*",
+        "*://*.bhphotovideo.com/*",
+        "*://*.microcenter.com/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
