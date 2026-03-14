@@ -146,8 +146,6 @@ export default function Popup() {
       <StatusBadge status={status} platformName={platformName} />
       <SupportedSites />
       <HowItWorks />
-      {/* TODO: Remove this disclaimer once LLM-backed analysis is wired up. */}
-      <p className="mt-4 text-[10px] text-gray-400 text-center">Mock data — LLM integration coming soon</p>
     </div>
   )
 }
