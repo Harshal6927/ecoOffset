@@ -8,13 +8,44 @@
     "default_title": "EcoOffset"
   },
   "permissions": ["storage", "activeTab", "alarms"],
-  "host_permissions": ["*://*.amazon.com/*", "*://*.amazon.ca/*", "*://*.ebay.com/*", "*://*.ebay.ca/*", "http://localhost:11434/*"],
+  "host_permissions": [
+    "*://*.amazon.com/*",
+    "*://*.amazon.ca/*",
+    "*://*.ebay.com/*",
+    "*://*.ebay.ca/*",
+    "*://*.walmart.com/*",
+    "*://*.walmart.ca/*",
+    "*://*.target.com/*",
+    "*://*.bestbuy.com/*",
+    "*://*.bestbuy.ca/*",
+    "*://*.costco.com/*",
+    "*://*.costco.ca/*",
+    "*://*.aliexpress.com/*",
+    "*://*.temu.com/*",
+    "*://*.shein.com/*",
+    "http://localhost:11434/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
   "content_scripts": [
     {
-      "matches": ["*://*.amazon.com/*", "*://*.amazon.ca/*", "*://*.ebay.com/*", "*://*.ebay.ca/*"],
+      "matches": [
+        "*://*.amazon.com/*",
+        "*://*.amazon.ca/*",
+        "*://*.ebay.com/*",
+        "*://*.ebay.ca/*",
+        "*://*.walmart.com/*",
+        "*://*.walmart.ca/*",
+        "*://*.target.com/*",
+        "*://*.bestbuy.com/*",
+        "*://*.bestbuy.ca/*",
+        "*://*.costco.com/*",
+        "*://*.costco.ca/*",
+        "*://*.aliexpress.com/*",
+        "*://*.temu.com/*",
+        "*://*.shein.com/*"
+      ],
       "js": ["content.js"],
       "run_at": "document_idle"
     }

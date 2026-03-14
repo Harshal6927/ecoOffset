@@ -169,8 +169,7 @@ export class LlmAnalysisService implements AnalysisService {
 
       if (response.status === 403) {
         throw new Error(
-          "Ollama blocked the request (HTTP 403). chrome-extension:// origins are not in the default allow-list. " +
-            'Fix: set OLLAMA_ORIGINS="*" before starting Ollama.',
+          'Ollama blocked the request (HTTP 403). chrome-extension:// origins are not in the default allow-list.\nFix: set OLLAMA_ORIGINS="*" before starting Ollama.',
         )
       }
       if (!response.ok) {

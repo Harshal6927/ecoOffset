@@ -12,6 +12,13 @@ import { useEffect, useState } from "react"
 const SUPPORTED_PLATFORMS: { name: string; pattern: RegExp }[] = [
   { name: "Amazon", pattern: /amazon\.[a-z.]+/i },
   { name: "eBay", pattern: /ebay\.[a-z.]+/i },
+  { name: "Walmart", pattern: /walmart\.[a-z.]+/i },
+  { name: "Target", pattern: /target\.[a-z.]+/i },
+  { name: "Best Buy", pattern: /bestbuy\.[a-z.]+/i },
+  { name: "Costco", pattern: /costco\.[a-z.]+/i },
+  { name: "AliExpress", pattern: /aliexpress\.[a-z.]+/i },
+  { name: "Temu", pattern: /temu\.[a-z.]+/i },
+  { name: "Shein", pattern: /shein\.[a-z.]+/i },
 ]
 
 type TabStatus = "loading" | "supported" | "unsupported"
