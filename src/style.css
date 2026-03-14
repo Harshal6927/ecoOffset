@@ -1,1 +1,260 @@
 @import "tailwindcss";
+
+:root {
+  color: #163229;
+  background:
+    radial-gradient(circle at top, rgba(192, 242, 211, 0.9), transparent 34%),
+    linear-gradient(180deg, #f5f0df 0%, #d8eadf 52%, #c3ddd0 100%);
+  font-family: "Segoe UI", sans-serif;
+  line-height: 1.4;
+  font-weight: 400;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 420px;
+  min-height: 720px;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+.popup-shell {
+  min-height: 100vh;
+  padding: 18px;
+}
+
+.popup-card {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(22, 50, 41, 0.08);
+  border-radius: 28px;
+  background: rgba(253, 250, 242, 0.84);
+  box-shadow: 0 24px 60px rgba(22, 50, 41, 0.16);
+  backdrop-filter: blur(14px);
+}
+
+.popup-card::before {
+  position: absolute;
+  inset: -140px auto auto -80px;
+  width: 220px;
+  height: 220px;
+  border-radius: 999px;
+  background: rgba(130, 197, 143, 0.24);
+  content: "";
+}
+
+.hero-panel,
+.analysis-panel,
+.result-panel {
+  position: relative;
+  padding: 22px;
+}
+
+.hero-panel {
+  border-bottom: 1px solid rgba(22, 50, 41, 0.08);
+}
+
+.eyebrow,
+.section-label {
+  margin: 0 0 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #356b56;
+}
+
+.hero-panel h1,
+.result-header h2,
+.alternative-card h3 {
+  margin: 0;
+  font-family: Georgia, serif;
+  line-height: 1.05;
+  color: #163229;
+}
+
+.hero-panel h1 {
+  font-size: 34px;
+  max-width: 10ch;
+}
+
+.hero-copy {
+  margin: 14px 0 0;
+  max-width: 34ch;
+  color: rgba(22, 50, 41, 0.78);
+}
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.hero-metrics div,
+.checkout-card,
+.alternative-card,
+.info-card {
+  border-radius: 20px;
+  border: 1px solid rgba(22, 50, 41, 0.08);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.hero-metrics div {
+  padding: 14px;
+}
+
+.hero-metrics strong {
+  display: block;
+  font-size: 22px;
+  color: #163229;
+}
+
+.hero-metrics span {
+  display: block;
+  margin-top: 6px;
+  color: rgba(22, 50, 41, 0.72);
+}
+
+.analysis-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #264b3d;
+}
+
+.query-input {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid rgba(22, 50, 41, 0.14);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.78);
+  color: #163229;
+  outline: none;
+}
+
+.query-input:focus {
+  border-color: #4c8a6d;
+  box-shadow: 0 0 0 4px rgba(76, 138, 109, 0.12);
+}
+
+.sample-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sample-chip,
+.analyze-button {
+  border: 0;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.sample-chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(76, 138, 109, 0.1);
+  color: #28523f;
+}
+
+.sample-chip:hover,
+.analyze-button:hover {
+  transform: translateY(-1px);
+}
+
+.analyze-button {
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #21543f 0%, #4d8b62 100%);
+  color: #f7f7f2;
+  font-weight: 700;
+  box-shadow: 0 16px 30px rgba(33, 84, 63, 0.2);
+}
+
+.result-panel {
+  display: grid;
+  gap: 14px;
+  background: linear-gradient(180deg, rgba(249, 248, 241, 0.4), rgba(255, 255, 255, 0.1));
+}
+
+.result-header,
+.alternative-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.result-header h2 {
+  font-size: 28px;
+  max-width: 11ch;
+}
+
+.impact-pill,
+.reduction-pill {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.impact-pill {
+  background: rgba(242, 198, 106, 0.28);
+  color: #725107;
+}
+
+.reduction-pill {
+  background: rgba(111, 193, 131, 0.18);
+  color: #21543f;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.info-card,
+.checkout-card,
+.alternative-card {
+  padding: 16px;
+}
+
+.info-card ul {
+  margin: 0;
+  padding-left: 18px;
+  color: rgba(22, 50, 41, 0.84);
+}
+
+.info-card li + li {
+  margin-top: 10px;
+}
+
+.alternative-card p,
+.checkout-card p {
+  margin: 8px 0 0;
+  color: rgba(22, 50, 41, 0.8);
+}
