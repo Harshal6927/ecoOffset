@@ -5,8 +5,8 @@
  * interfere with our UI and our styles cannot break their pages.
  *
  * Displays:
- *  - An overall eco-score pill (green / amber / red) derived from carbon grade,
- *    water score, and recyclable percent
+ *  - An overall eco-score pill (green / amber / red) derived from carbon grade
+ *    and recyclable percent
  *  - A "View eco-friendly alternatives" call-to-action link
  *
  * Clicking the badge fires the provided onClick callback.
@@ -33,18 +33,18 @@ function scoreToLevel(score: number): "low" | "medium" | "high" {
 
 /**
  * Computes a single overall eco score by averaging a normalised carbon score
- * (derived from the carbon grade), water score, and inverted recyclable percent
- * with equal weighting.
+ * (derived from the carbon grade) and inverted recyclable percent with equal
+ * weighting.
  *
  * carbonKgCo2eq is first converted to a letter grade (A/B/C/D), then mapped to
  * a normalised 0–100 value (A=20, B=40, C=60, D=80) so it is comparable with
- * the 0–100 water score. recyclablePercent is inverted (100 - value) so that
+ * the 0–100 scale. recyclablePercent is inverted (100 - value) so that
  * higher recyclability contributes a lower (better) score.
  */
 function averageScore(result: AnalysisResult): number {
-  const { carbonKgCo2eq, waterScore, recyclablePercent } = result.ecoImpact
+  const { carbonKgCo2eq, recyclablePercent } = result.ecoImpact
   const normalizedCarbon = carbonGradeToScore(getCarbonGrade(carbonKgCo2eq))
-  return Math.round((normalizedCarbon + waterScore + (100 - recyclablePercent)) / 3)
+  return Math.round((normalizedCarbon + (100 - recyclablePercent)) / 2)
 }
 
 const LEVEL_STYLES: Record<"low" | "medium" | "high", { bg: string; text: string; label: string }> = {

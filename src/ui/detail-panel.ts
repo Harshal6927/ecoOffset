@@ -5,7 +5,6 @@
  *
  * Displays:
  *  - Carbon kgCO2eq + grade badge (A/B/C/D)
- *  - Water score with visual progress bar
  *  - Recyclable percentage with progress bar and recycling grade (A/B/C/D)
  *  - A plain-English impact summary
  *  - Eco-friendly alternative suggestions with direct search links
@@ -274,24 +273,8 @@ const PANEL_STYLES = `
 `
 
 /**
- * Returns a fill colour for an individual eco score bar (0–100, lower = better).
- *
- * Uses the same thresholds as `scoreToLevel` in eco-badge.ts:
- *   ≤40 → green (#10b981)
- *   ≤65 → amber (#f59e0b)
- *   > 65 → red   (#ef4444)
- *
- * If you change these thresholds, update eco-badge.ts `scoreToLevel` too.
- */
-function scoreColor(score: number): string {
-  if (score <= 40) return "#10b981" // green
-  if (score <= 65) return "#f59e0b" // amber
-  return "#ef4444" // red
-}
-
-/**
  * Returns a fill colour for the recyclable percentage bar (0–100, higher = better).
- * Inverted thresholds compared to scoreColor:
+ * Thresholds:
  *   ≥60 → green (#10b981)
  *   ≥35 → amber (#f59e0b)
  *   < 35 → red   (#ef4444)
@@ -335,7 +318,7 @@ export class DetailPanel {
     this.shadowRoot = this.host.attachShadow({ mode: "open" })
 
     const { ecoImpact, alternatives, tips, product } = result
-    const { carbonKgCo2eq, waterScore, recyclablePercent, summary } = ecoImpact
+    const { carbonKgCo2eq, recyclablePercent, summary } = ecoImpact
 
     const style = document.createElement("style")
     style.textContent = PANEL_STYLES
@@ -347,17 +330,6 @@ export class DetailPanel {
         <span class="score-label">Carbon</span>
         <span class="carbon-kg">${carbonKgCo2eq.toFixed(1)} kg CO&#x2082;e</span>
         <span class="carbon-grade grade-${carbonGrade.toLowerCase()}">${carbonGrade}</span>
-      </div>
-    `
-
-    // Water row: 0–100 progress bar (lower = better)
-    const waterBarHtml = `
-      <div class="score-row">
-        <span class="score-label">Water</span>
-        <div class="bar-track">
-          <div class="bar-fill" style="width:${waterScore}%;background:${scoreColor(waterScore)};"></div>
-        </div>
-        <span class="score-value">${waterScore}/100</span>
       </div>
     `
 
@@ -374,7 +346,7 @@ export class DetailPanel {
       </div>
     `
 
-    const scoreBarsHtml = carbonRowHtml + waterBarHtml + recyclableBarHtml
+    const scoreBarsHtml = carbonRowHtml + recyclableBarHtml
 
     // Build alternatives HTML
     const alternativesHtml = alternatives

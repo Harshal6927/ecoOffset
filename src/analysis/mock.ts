@@ -210,7 +210,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   electronics: {
     ecoImpact: {
       carbonKgCo2eq: 45.0,
-      waterScore: 55,
       recyclablePercent: 20,
       summary: "Electronics have a high environmental footprint due to rare-earth mineral mining, energy-intensive manufacturing, and e-waste at end of life.",
     },
@@ -237,7 +236,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   clothing: {
     ecoImpact: {
       carbonKgCo2eq: 22.0,
-      waterScore: 88,
       recyclablePercent: 35,
       summary: "The fashion industry is one of the largest water consumers globally. Synthetic fabrics shed microplastics, and fast-fashion contributes heavily to textile waste.",
     },
@@ -264,7 +262,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   furniture: {
     ecoImpact: {
       carbonKgCo2eq: 18.0,
-      waterScore: 42,
       recyclablePercent: 45,
       summary:
         "Furniture production drives deforestation when non-certified wood is used. Flat-pack designs reduce transport emissions but generate composite wood waste at end of life.",
@@ -292,7 +289,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   food: {
     ecoImpact: {
       carbonKgCo2eq: 8.0,
-      waterScore: 60,
       recyclablePercent: 60,
       summary: "Food's environmental impact varies significantly by type. Packaging is a major contributor to plastic waste, and supply chains add transport emissions.",
     },
@@ -319,7 +315,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   beauty: {
     ecoImpact: {
       carbonKgCo2eq: 12.0,
-      waterScore: 65,
       recyclablePercent: 30,
       summary: "Beauty products often use single-use plastic packaging and may contain microbeads or synthetic chemicals that persist in waterways.",
     },
@@ -346,7 +341,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   toys: {
     ecoImpact: {
       carbonKgCo2eq: 16.0,
-      waterScore: 35,
       recyclablePercent: 25,
       summary: "Most toys are made from virgin plastics that take centuries to degrade. Battery-powered toys add e-waste, and toy trends lead to rapid disposal.",
     },
@@ -373,7 +367,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   books: {
     ecoImpact: {
       carbonKgCo2eq: 2.5,
-      waterScore: 40,
       recyclablePercent: 80,
       summary: "Books have a relatively lower environmental impact compared to many products, but paper production still contributes to deforestation and water use.",
     },
@@ -400,7 +393,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   sports: {
     ecoImpact: {
       carbonKgCo2eq: 14.0,
-      waterScore: 48,
       recyclablePercent: 40,
       summary:
         "Sports equipment often uses synthetic materials and rubber with significant manufacturing footprints. Seasonal and trend-driven purchasing leads to premature disposal.",
@@ -428,7 +420,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   home_appliance: {
     ecoImpact: {
       carbonKgCo2eq: 35.0,
-      waterScore: 50,
       recyclablePercent: 22,
       summary: "Home appliances have high embodied energy from manufacturing and contribute significant e-waste. Energy efficiency during use is a key factor in lifetime impact.",
     },
@@ -455,7 +446,6 @@ const CATEGORY_DATA: Record<Category, CategoryData> = {
   generic: {
     ecoImpact: {
       carbonKgCo2eq: 13.0,
-      waterScore: 50,
       recyclablePercent: 40,
       summary: "Every product has an environmental footprint from raw material extraction, manufacturing, transport, and end-of-life disposal. Choosing wisely makes a difference.",
     },

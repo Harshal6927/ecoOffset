@@ -34,7 +34,6 @@ const SYSTEM_PROMPT = `You are an environmental impact analyst. Given a product 
 The JSON must match this exact shape:
 {
   "carbonKgCo2eq": <positive decimal, estimated kg CO2 equivalent for the full product lifecycle>,
-  "waterScore": <integer 0-100, lower = lower water usage>,
   "recyclablePercent": <integer 0-100, percentage of the product that can be recycled>,
   "summary": "<1-2 sentence factual summary of the product's main environmental impact>",
   "alternatives": [
@@ -52,7 +51,6 @@ The JSON must match this exact shape:
 
 Rules:
 - carbonKgCo2eq is a positive decimal representing estimated kg CO2 equivalent (e.g. 2.5, 18.0, 45.3). Lower means less carbon footprint.
-- waterScore is an integer 0-100. Lower means less environmental impact.
 - recyclablePercent is an integer 0-100 representing the percentage of the product that can be recycled. Higher means more recyclable.
 - Provide exactly 3 alternatives and exactly 4 tips.
 - Be concise and factual. No filler phrases.
@@ -69,7 +67,6 @@ Rules:
  */
 interface LlmJsonResponse {
   carbonKgCo2eq: number
-  waterScore: number
   recyclablePercent: number
   summary: string
   alternatives: Array<{ name: string; reason: string }>
@@ -121,7 +118,6 @@ function parseResponse(raw: string, product: Product): AnalysisResult {
 
   const ecoImpact: EcoImpact = {
     carbonKgCo2eq: parseKgCo2eq(data.carbonKgCo2eq),
-    waterScore: clamp(data.waterScore),
     recyclablePercent: clamp(data.recyclablePercent),
     summary: typeof data.summary === "string" && data.summary.trim().length > 0 ? data.summary.trim() : "Environmental impact data unavailable.",
   }
