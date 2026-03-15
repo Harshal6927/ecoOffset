@@ -5,12 +5,14 @@
  * interfere with our UI and our styles cannot break their pages.
  *
  * Displays:
- *  - An overall eco-score pill (green / amber / red)
+ *  - An overall eco-score pill (green / amber / red) derived from carbon grade,
+ *    water score, and waste score
  *  - A "View eco-friendly alternatives" call-to-action link
  *
  * Clicking the badge fires the provided onClick callback.
  */
 import type { AnalysisResult } from "../types"
+import { carbonGradeToScore, getCarbonGrade } from "../types"
 
 /**
  * Maps an average eco score to a severity level.
@@ -30,12 +32,17 @@ function scoreToLevel(score: number): "low" | "medium" | "high" {
 }
 
 /**
- * Computes a single overall eco score by averaging carbon, water, and waste
- * scores with equal weighting (each contributes 1/3).
+ * Computes a single overall eco score by averaging a normalised carbon score
+ * (derived from the carbon grade), water, and waste scores with equal weighting.
+ *
+ * carbonKgCo2eq is first converted to a letter grade (A/B/C/D), then mapped to
+ * a normalised 0–100 value (A=20, B=40, C=60, D=80) so it is comparable with
+ * the 0–100 water and waste scores.
  */
 function averageScore(result: AnalysisResult): number {
-  const { carbonScore, waterScore, wasteScore } = result.ecoImpact
-  return Math.round((carbonScore + waterScore + wasteScore) / 3)
+  const { carbonKgCo2eq, waterScore, wasteScore } = result.ecoImpact
+  const normalizedCarbon = carbonGradeToScore(getCarbonGrade(carbonKgCo2eq))
+  return Math.round((normalizedCarbon + waterScore + wasteScore) / 3)
 }
 
 const LEVEL_STYLES: Record<"low" | "medium" | "high", { bg: string; text: string; label: string }> = {

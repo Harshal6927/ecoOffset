@@ -4,7 +4,8 @@
  * Also rendered inside a Shadow DOM root for style isolation.
  *
  * Displays:
- *  - Carbon / water / waste scores with visual progress bars
+ *  - Carbon kgCO2eq + grade badge (A/B/C/D)
+ *  - Water / waste scores with visual progress bars
  *  - A plain-English impact summary
  *  - Eco-friendly alternative suggestions with direct search links
  *  - Actionable tips to reduce the product's environmental impact
@@ -13,6 +14,7 @@
  * the host page's layout.
  */
 import type { AnalysisResult } from "../types"
+import { getCarbonGrade } from "../types"
 
 const PANEL_STYLES = `
   :host {
@@ -181,6 +183,29 @@ const PANEL_STYLES = `
     flex-shrink: 0;
   }
 
+  /* Carbon-specific row: kgCO2e value + grade pill */
+  .carbon-kg {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+  }
+  .carbon-grade {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+  .grade-a { background: #d1fae5; color: #065f46; }
+  .grade-b { background: #d9f99d; color: #365314; }
+  .grade-c { background: #fef3c7; color: #92400e; }
+  .grade-d { background: #fee2e2; color: #991b1b; }
+
   /* Alternatives */
   .alt-card {
     background: linear-gradient(145deg, #f8fffb, #effcf4);
@@ -280,18 +305,26 @@ export class DetailPanel {
     this.shadowRoot = this.host.attachShadow({ mode: "open" })
 
     const { ecoImpact, alternatives, tips, product } = result
-    const { carbonScore, waterScore, wasteScore, summary } = ecoImpact
+    const { carbonKgCo2eq, waterScore, wasteScore, summary } = ecoImpact
 
     const style = document.createElement("style")
     style.textContent = PANEL_STYLES
 
-    // Build score bars HTML
-    const scores = [
-      { label: "Carbon", value: carbonScore },
+    // Carbon row: kgCO2eq value + letter grade badge (no progress bar)
+    const carbonGrade = getCarbonGrade(carbonKgCo2eq)
+    const carbonRowHtml = `
+      <div class="score-row">
+        <span class="score-label">Carbon</span>
+        <span class="carbon-kg">${carbonKgCo2eq.toFixed(1)} kg CO&#x2082;e</span>
+        <span class="carbon-grade grade-${carbonGrade.toLowerCase()}">${carbonGrade}</span>
+      </div>
+    `
+
+    // Water and waste rows: 0–100 progress bars (unchanged)
+    const waterWasteBarsHtml = [
       { label: "Water", value: waterScore },
       { label: "Waste", value: wasteScore },
     ]
-    const scoreBarsHtml = scores
       .map(
         ({ label, value }) => `
         <div class="score-row">
@@ -304,6 +337,8 @@ export class DetailPanel {
       `,
       )
       .join("")
+
+    const scoreBarsHtml = carbonRowHtml + waterWasteBarsHtml
 
     // Build alternatives HTML
     const alternativesHtml = alternatives

@@ -14,13 +14,43 @@ export interface Product {
   url: string
 }
 
+/** Carbon footprint letter grade. A = best, D = worst. */
+export type CarbonGrade = "A" | "B" | "C" | "D"
+
 /**
- * Environmental impact scores for a product.
- * Scores are 0–100 where lower is better (less environmental impact).
+ * Maps a kgCO2eq value to a letter grade.
+ *
+ * Thresholds:
+ *   A: 0 – 5 kg    (very low footprint)
+ *   B: > 5 – 15 kg (low footprint)
+ *   C: > 15 – 30 kg (moderate footprint)
+ *   D: > 30 kg      (high footprint)
+ */
+export function getCarbonGrade(kgCo2eq: number): CarbonGrade {
+  if (kgCo2eq <= 5) return "A"
+  if (kgCo2eq <= 15) return "B"
+  if (kgCo2eq <= 30) return "C"
+  return "D"
+}
+
+/**
+ * Maps a CarbonGrade to a normalised 0–100 score for badge averaging.
+ *
+ *   A → 20  B → 40  C → 60  D → 80
+ */
+export function carbonGradeToScore(grade: CarbonGrade): number {
+  const map: Record<CarbonGrade, number> = { A: 20, B: 40, C: 60, D: 80 }
+  return map[grade]
+}
+
+/**
+ * Environmental impact metrics for a product.
+ * carbonKgCo2eq is a positive decimal (kg CO2 equivalent, lower is better).
+ * waterScore and wasteScore are integers 0–100 (lower is better).
  */
 export interface EcoImpact {
-  /** Carbon footprint score (0 = minimal, 100 = very high). */
-  carbonScore: number
+  /** Estimated carbon footprint in kg CO2 equivalent (lower is better). */
+  carbonKgCo2eq: number
   /** Water usage score (0 = minimal, 100 = very high). */
   waterScore: number
   /** Waste generation score (0 = minimal, 100 = very high). */

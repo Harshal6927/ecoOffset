@@ -33,7 +33,7 @@ const SYSTEM_PROMPT = `You are an environmental impact analyst. Given a product 
 
 The JSON must match this exact shape:
 {
-  "carbonScore": <integer 0-100, lower = lower carbon footprint>,
+  "carbonKgCo2eq": <positive decimal, estimated kg CO2 equivalent for the full product lifecycle>,
   "waterScore": <integer 0-100, lower = lower water usage>,
   "wasteScore": <integer 0-100, lower = less waste generated>,
   "summary": "<1-2 sentence factual summary of the product's main environmental impact>",
@@ -51,7 +51,8 @@ The JSON must match this exact shape:
 }
 
 Rules:
-- Scores are integers 0-100. Lower means less environmental impact.
+- carbonKgCo2eq is a positive decimal representing estimated kg CO2 equivalent (e.g. 2.5, 18.0, 45.3). Lower means less carbon footprint.
+- waterScore and wasteScore are integers 0-100. Lower means less environmental impact.
 - Provide exactly 3 alternatives and exactly 4 tips.
 - Be concise and factual. No filler phrases.
 - Return only the raw JSON object. /no_think`
@@ -66,7 +67,7 @@ Rules:
  * to avoid hallucinated links.
  */
 interface LlmJsonResponse {
-  carbonScore: number
+  carbonKgCo2eq: number
   waterScore: number
   wasteScore: number
   summary: string
@@ -89,6 +90,16 @@ function clamp(value: unknown, min = 0, max = 100): number {
 }
 
 /**
+ * Parses a kgCO2eq value — must be a positive finite number.
+ * Rounds to one decimal place. Returns 10.0 as a safe fallback.
+ */
+function parseKgCo2eq(value: unknown): number {
+  const n = typeof value === "number" ? value : Number.parseFloat(String(value))
+  if (!Number.isFinite(n) || n < 0) return 10.0
+  return Math.round(n * 10) / 10
+}
+
+/**
  * Strips `<think>…</think>` blocks emitted by Qwen3 thinking models before
  * the actual response content. The `/no_think` suffix in the system prompt
  * should prevent them, but this is a safety net.
@@ -108,7 +119,7 @@ function parseResponse(raw: string, product: Product): AnalysisResult {
   const data = JSON.parse(cleaned) as LlmJsonResponse
 
   const ecoImpact: EcoImpact = {
-    carbonScore: clamp(data.carbonScore),
+    carbonKgCo2eq: parseKgCo2eq(data.carbonKgCo2eq),
     waterScore: clamp(data.waterScore),
     wasteScore: clamp(data.wasteScore),
     summary: typeof data.summary === "string" && data.summary.trim().length > 0 ? data.summary.trim() : "Environmental impact data unavailable.",
