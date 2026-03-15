@@ -1,11 +1,12 @@
 /**
- * Detail Panel 鈥?expanded eco-impact view shown when the user clicks the badge.
+ * Detail Panel — expanded eco-impact view shown when the user clicks the badge.
  *
  * Also rendered inside a Shadow DOM root for style isolation.
  *
  * Displays:
  *  - Carbon kgCO2eq + grade badge (A/B/C/D)
- *  - Water / waste scores with visual progress bars
+ *  - Water score with visual progress bar
+ *  - Recyclable percentage with progress bar and recycling grade (A/B/C/D)
  *  - A plain-English impact summary
  *  - Eco-friendly alternative suggestions with direct search links
  *  - Actionable tips to reduce the product's environmental impact
@@ -273,12 +274,12 @@ const PANEL_STYLES = `
 `
 
 /**
- * Returns a fill colour for an individual eco score bar (0鈥?00, lower = better).
+ * Returns a fill colour for an individual eco score bar (0–100, lower = better).
  *
  * Uses the same thresholds as `scoreToLevel` in eco-badge.ts:
- *   鈮?40 鈫?green (#10b981)
- *   鈮?65 鈫?amber (#f59e0b)
- *   > 65 鈫?red   (#ef4444)
+ *   ≤40 → green (#10b981)
+ *   ≤65 → amber (#f59e0b)
+ *   > 65 → red   (#ef4444)
  *
  * If you change these thresholds, update eco-badge.ts `scoreToLevel` too.
  */
@@ -286,6 +287,35 @@ function scoreColor(score: number): string {
   if (score <= 40) return "#10b981" // green
   if (score <= 65) return "#f59e0b" // amber
   return "#ef4444" // red
+}
+
+/**
+ * Returns a fill colour for the recyclable percentage bar (0–100, higher = better).
+ * Inverted thresholds compared to scoreColor:
+ *   ≥60 → green (#10b981)
+ *   ≥35 → amber (#f59e0b)
+ *   < 35 → red   (#ef4444)
+ */
+function recycleColor(percent: number): string {
+  if (percent >= 60) return "#10b981" // green
+  if (percent >= 35) return "#f59e0b" // amber
+  return "#ef4444" // red
+}
+
+/**
+ * Maps a recyclable percentage to a letter grade.
+ *
+ * Thresholds:
+ *   A: 75–100%  (highly recyclable)
+ *   B: 50–74%   (moderately recyclable)
+ *   C: 25–49%   (low recyclability)
+ *   D: 0–24%    (very low recyclability)
+ */
+function getRecyclingGrade(percent: number): "A" | "B" | "C" | "D" {
+  if (percent >= 75) return "A"
+  if (percent >= 50) return "B"
+  if (percent >= 25) return "C"
+  return "D"
 }
 
 export class DetailPanel {
@@ -305,7 +335,7 @@ export class DetailPanel {
     this.shadowRoot = this.host.attachShadow({ mode: "open" })
 
     const { ecoImpact, alternatives, tips, product } = result
-    const { carbonKgCo2eq, waterScore, wasteScore, summary } = ecoImpact
+    const { carbonKgCo2eq, waterScore, recyclablePercent, summary } = ecoImpact
 
     const style = document.createElement("style")
     style.textContent = PANEL_STYLES
@@ -320,25 +350,31 @@ export class DetailPanel {
       </div>
     `
 
-    // Water and waste rows: 0–100 progress bars (unchanged)
-    const waterWasteBarsHtml = [
-      { label: "Water", value: waterScore },
-      { label: "Waste", value: wasteScore },
-    ]
-      .map(
-        ({ label, value }) => `
-        <div class="score-row">
-          <span class="score-label">${label}</span>
-          <div class="bar-track">
-            <div class="bar-fill" style="width:${value}%;background:${scoreColor(value)};"></div>
-          </div>
-          <span class="score-value">${value}/100</span>
+    // Water row: 0–100 progress bar (lower = better)
+    const waterBarHtml = `
+      <div class="score-row">
+        <span class="score-label">Water</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${waterScore}%;background:${scoreColor(waterScore)};"></div>
         </div>
-      `,
-      )
-      .join("")
+        <span class="score-value">${waterScore}/100</span>
+      </div>
+    `
 
-    const scoreBarsHtml = carbonRowHtml + waterWasteBarsHtml
+    // Recyclable row: 0–100 progress bar (higher = better) + grade badge
+    const recyclingGrade = getRecyclingGrade(recyclablePercent)
+    const recyclableBarHtml = `
+      <div class="score-row">
+        <span class="score-label">Recyclable</span>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${recyclablePercent}%;background:${recycleColor(recyclablePercent)};"></div>
+        </div>
+        <span class="score-value">${recyclablePercent}%</span>
+        <span class="carbon-grade grade-${recyclingGrade.toLowerCase()}">${recyclingGrade}</span>
+      </div>
+    `
+
+    const scoreBarsHtml = carbonRowHtml + waterBarHtml + recyclableBarHtml
 
     // Build alternatives HTML
     const alternativesHtml = alternatives

@@ -35,7 +35,7 @@ The JSON must match this exact shape:
 {
   "carbonKgCo2eq": <positive decimal, estimated kg CO2 equivalent for the full product lifecycle>,
   "waterScore": <integer 0-100, lower = lower water usage>,
-  "wasteScore": <integer 0-100, lower = less waste generated>,
+  "recyclablePercent": <integer 0-100, percentage of the product that can be recycled>,
   "summary": "<1-2 sentence factual summary of the product's main environmental impact>",
   "alternatives": [
     { "name": "<concise name of an eco-friendly alternative>", "reason": "<one sentence why it is more sustainable>" },
@@ -52,7 +52,8 @@ The JSON must match this exact shape:
 
 Rules:
 - carbonKgCo2eq is a positive decimal representing estimated kg CO2 equivalent (e.g. 2.5, 18.0, 45.3). Lower means less carbon footprint.
-- waterScore and wasteScore are integers 0-100. Lower means less environmental impact.
+- waterScore is an integer 0-100. Lower means less environmental impact.
+- recyclablePercent is an integer 0-100 representing the percentage of the product that can be recycled. Higher means more recyclable.
 - Provide exactly 3 alternatives and exactly 4 tips.
 - Be concise and factual. No filler phrases.
 - Return only the raw JSON object. /no_think`
@@ -69,7 +70,7 @@ Rules:
 interface LlmJsonResponse {
   carbonKgCo2eq: number
   waterScore: number
-  wasteScore: number
+  recyclablePercent: number
   summary: string
   alternatives: Array<{ name: string; reason: string }>
   tips: string[]
@@ -121,7 +122,7 @@ function parseResponse(raw: string, product: Product): AnalysisResult {
   const ecoImpact: EcoImpact = {
     carbonKgCo2eq: parseKgCo2eq(data.carbonKgCo2eq),
     waterScore: clamp(data.waterScore),
-    wasteScore: clamp(data.wasteScore),
+    recyclablePercent: clamp(data.recyclablePercent),
     summary: typeof data.summary === "string" && data.summary.trim().length > 0 ? data.summary.trim() : "Environmental impact data unavailable.",
   }
 

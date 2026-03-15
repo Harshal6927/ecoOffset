@@ -46,15 +46,17 @@ export function carbonGradeToScore(grade: CarbonGrade): number {
 /**
  * Environmental impact metrics for a product.
  * carbonKgCo2eq is a positive decimal (kg CO2 equivalent, lower is better).
- * waterScore and wasteScore are integers 0–100 (lower is better).
+ * waterScore is an integer 0–100 (lower is better).
+ * recyclablePercent is an integer 0–100 representing the percentage of the
+ * product that can be recycled (higher is better), graded A/B/C/D.
  */
 export interface EcoImpact {
   /** Estimated carbon footprint in kg CO2 equivalent (lower is better). */
   carbonKgCo2eq: number
   /** Water usage score (0 = minimal, 100 = very high). */
   waterScore: number
-  /** Waste generation score (0 = minimal, 100 = very high). */
-  wasteScore: number
+  /** Percentage of the product that is recyclable (0–100, higher is better). */
+  recyclablePercent: number
   /** Human-readable summary of the environmental impact. */
   summary: string
 }
