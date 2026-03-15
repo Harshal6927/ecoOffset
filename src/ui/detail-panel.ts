@@ -29,10 +29,7 @@ const PANEL_STYLES = `
   .overlay {
     position: fixed;
     top: 0; right: 0; bottom: 0; left: 0;
-    background:
-      linear-gradient(180deg, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0.28)),
-      rgba(6, 78, 59, 0.12);
-    backdrop-filter: blur(8px);
+    background: rgba(15, 23, 42, 0.18);
     /* 2147483646 = INT_MAX - 1, the highest z-index reliably supported across
        browsers. Keeps the overlay on top of any host-page stacking contexts. */
     z-index: 2147483646;
@@ -56,6 +53,14 @@ const PANEL_STYLES = `
     display: flex;
     flex-direction: column;
     animation: slideIn 0.22s ease-out;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(16, 185, 129, 0.3) transparent;
+  }
+  .panel::-webkit-scrollbar { width: 5px; }
+  .panel::-webkit-scrollbar-track { background: transparent; }
+  .panel::-webkit-scrollbar-thumb {
+    background: rgba(16, 185, 129, 0.3);
+    border-radius: 999px;
   }
 
   @keyframes slideIn {
@@ -109,20 +114,7 @@ const PANEL_STYLES = `
     transform: translateY(-1px);
   }
 
-  .body { padding: 16px 20px 20px; }
-
-  .product-name {
-    font-size: 12px;
-    color: #5f6f68;
-    margin-bottom: 14px;
-    padding: 10px 12px;
-    border-radius: 14px;
-    background: rgba(248, 250, 252, 0.8);
-    border: 1px solid rgba(226, 232, 240, 0.88);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+  .body { padding: 10px 20px 20px; }
 
   .section-title {
     font-weight: 700;
@@ -214,6 +206,11 @@ const PANEL_STYLES = `
     padding: 12px 14px;
     margin: 8px 0;
     box-shadow: 0 10px 24px rgba(16, 185, 129, 0.08);
+    transition: box-shadow 0.18s ease, transform 0.18s ease;
+  }
+  .alt-card:hover {
+    box-shadow: 0 14px 32px rgba(16, 185, 129, 0.14);
+    transform: translateY(-1px);
   }
   .alt-name {
     font-weight: 700;
@@ -247,16 +244,7 @@ const PANEL_STYLES = `
     font-size: 12px;
     color: #334155;
     margin: 6px 0;
-  }
-
-  /* Footer */
-  .footer {
-    padding: 10px 20px 16px;
-    border-top: 1px solid rgba(229, 231, 235, 0.9);
-    font-size: 11px;
-    color: #94a3b8;
-    text-align: center;
-    background: rgba(255,255,255,0.65);
+    line-height: 1.6;
   }
 
   @media (max-width: 640px) {
@@ -317,7 +305,7 @@ export class DetailPanel {
 
     this.shadowRoot = this.host.attachShadow({ mode: "open" })
 
-    const { ecoImpact, alternatives, tips, product } = result
+    const { ecoImpact, alternatives, tips } = result
     const { carbonKgCo2eq, recyclablePercent, summary } = ecoImpact
 
     const style = document.createElement("style")
@@ -378,8 +366,6 @@ export class DetailPanel {
           <button class="close-btn" aria-label="Close eco panel">&#10005;</button>
         </div>
         <div class="body">
-          <div class="product-name" title="${escapeHtml(product.name)}">${escapeHtml(product.name)}</div>
-
           <div class="section-title">Environmental Impact</div>
           <div class="summary">${escapeHtml(summary)}</div>
           ${scoreBarsHtml}
@@ -390,7 +376,6 @@ export class DetailPanel {
           <div class="section-title">Tips to Reduce Impact</div>
           <ul class="tips-list">${tipsHtml}</ul>
         </div>
-        <div class="footer">Powered by EcoOffset &bull; Data is illustrative</div>
       </div>
     `
 

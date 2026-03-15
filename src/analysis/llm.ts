@@ -1,21 +1,36 @@
 /**
- * LLM-backed analysis service using Ollama (qwen3.5:4b).
+ * LLM-backed analysis service supporting two providers:
+ *   - "google"  — Google GenAI (gemini-2.0-flash) via the @google/genai SDK
+ *   - "ollama"  — Local Ollama (qwen3.5:4b) via raw fetch (MV3-compatible)
  *
- * Calls the Ollama REST API directly via fetch — fully compatible with MV3
- * service workers (avoids Node.js API dependencies from the ollama npm package).
- *
+ * Switch providers by changing LLM_PROVIDER below.
  * This class throws on any error; the caller (background.ts) is responsible
  * for catching and falling back to MockAnalysisService.
  */
+import { GoogleGenAI } from "@google/genai"
 import type { Alternative, AnalysisResult, EcoImpact, Product } from "../types"
 import type { AnalysisService } from "./index"
 
 // ---------------------------------------------------------------------------
-// Constants
+// Provider selection
+// ---------------------------------------------------------------------------
+
+/** Set to "google" or "ollama" to choose the active LLM backend. */
+const LLM_PROVIDER: "google" | "ollama" = "google"
+
+// ---------------------------------------------------------------------------
+// Constants — Google
+// ---------------------------------------------------------------------------
+
+const GOOGLE_API_KEY = "GOOGLE_API_KEY"
+const GOOGLE_MODEL = "gemini-3.1-flash-lite-preview"
+
+// ---------------------------------------------------------------------------
+// Constants — Ollama
 // ---------------------------------------------------------------------------
 
 const OLLAMA_URL = "http://localhost:11434/api/chat"
-const MODEL = "qwen3.5:4b"
+const OLLAMA_MODEL = "qwen3.5:4b"
 
 /** Abort the fetch after 300 s to avoid hanging the service worker indefinitely. */
 const TIMEOUT_MS = 300000
@@ -26,8 +41,7 @@ const TIMEOUT_MS = 300000
 
 /**
  * System prompt instructs the model to respond with a raw JSON object matching
- * the LlmJsonResponse shape. `/no_think` disables Qwen3's chain-of-thought mode
- * so the response contains only the JSON output.
+ * the LlmJsonResponse shape.
  */
 const SYSTEM_PROMPT = `You are an environmental impact analyst. Given a product name and shopping platform, analyse its sustainability and respond ONLY with a raw JSON object — no markdown, no explanation, no preamble.
 
@@ -38,23 +52,27 @@ The JSON must match this exact shape:
   "summary": "<1-2 sentence factual summary of the product's main environmental impact>",
   "alternatives": [
     { "name": "<concise name of an eco-friendly alternative>", "reason": "<one sentence why it is more sustainable>" },
-    { "name": "<concise name of an eco-friendly alternative>", "reason": "<one sentence why it is more sustainable>" },
     { "name": "<concise name of an eco-friendly alternative>", "reason": "<one sentence why it is more sustainable>" }
   ],
   "tips": [
     "<actionable sustainability tip 1>",
     "<actionable sustainability tip 2>",
-    "<actionable sustainability tip 3>",
-    "<actionable sustainability tip 4>"
+    "<actionable sustainability tip 3>"
   ]
 }
 
 Rules:
 - carbonKgCo2eq is a positive decimal representing estimated kg CO2 equivalent (e.g. 2.5, 18.0, 45.3). Lower means less carbon footprint.
 - recyclablePercent is an integer 0-100 representing the percentage of the product that can be recycled. Higher means more recyclable.
-- Provide exactly 3 alternatives and exactly 4 tips.
+- Provide exactly 2 alternatives and exactly 3 tips.
 - Be concise and factual. No filler phrases.
-- Return only the raw JSON object. /no_think`
+- Return only the raw JSON object.`
+
+/**
+ * Appended to SYSTEM_PROMPT only when using Ollama/Qwen3 to disable
+ * chain-of-thought mode so the response contains only the JSON output.
+ */
+const OLLAMA_NO_THINK_SUFFIX = " /no_think"
 
 // ---------------------------------------------------------------------------
 // Internal types
@@ -123,7 +141,6 @@ function parseResponse(raw: string, product: Product): AnalysisResult {
   }
 
   const rawAlts = Array.isArray(data.alternatives) ? data.alternatives.slice(0, 3) : []
-  const productSearchTerm = encodeURIComponent(product.name.slice(0, 60))
 
   // Build alternatives with code-generated searchUrls (never trust model-produced URLs)
   const alternatives: Alternative[] = rawAlts.map((alt) => ({
@@ -131,13 +148,6 @@ function parseResponse(raw: string, product: Product): AnalysisResult {
     reason: typeof alt.reason === "string" ? alt.reason.trim() : "",
     searchUrl: `https://www.amazon.com/s?k=${encodeURIComponent(((alt.name as string) ?? "").slice(0, 60))}+sustainable+eco`,
   }))
-
-  // Prepend a direct eco search for the specific product being viewed
-  alternatives.unshift({
-    name: `Eco-friendly ${product.name.slice(0, 50)}`,
-    reason: "Search for a certified sustainable version of this exact product.",
-    searchUrl: `https://www.amazon.com/s?k=eco+friendly+sustainable+${productSearchTerm}`,
-  })
 
   const tips: string[] = Array.isArray(data.tips)
     ? data.tips
@@ -155,6 +165,42 @@ function parseResponse(raw: string, product: Product): AnalysisResult {
 
 export class LlmAnalysisService implements AnalysisService {
   async analyze(product: Product): Promise<AnalysisResult> {
+    if (LLM_PROVIDER === "google") {
+      return this.analyzeWithGoogle(product)
+    }
+    return this.analyzeWithOllama(product)
+  }
+
+  // -------------------------------------------------------------------------
+  // Google GenAI provider
+  // -------------------------------------------------------------------------
+
+  private async analyzeWithGoogle(product: Product): Promise<AnalysisResult> {
+    const ai = new GoogleGenAI({ apiKey: GOOGLE_API_KEY })
+
+    const response = await ai.models.generateContent({
+      model: GOOGLE_MODEL,
+      contents: `Product: "${product.name}" on ${product.platform}`,
+      config: {
+        systemInstruction: SYSTEM_PROMPT,
+        temperature: 0.2,
+        responseMimeType: "application/json",
+      },
+    })
+
+    const content = response.text
+    if (typeof content !== "string" || content.trim().length === 0) {
+      throw new Error("Google GenAI response missing text content")
+    }
+
+    return parseResponse(content, product)
+  }
+
+  // -------------------------------------------------------------------------
+  // Ollama provider
+  // -------------------------------------------------------------------------
+
+  private async analyzeWithOllama(product: Product): Promise<AnalysisResult> {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), TIMEOUT_MS)
 
@@ -163,9 +209,9 @@ export class LlmAnalysisService implements AnalysisService {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          model: MODEL,
+          model: OLLAMA_MODEL,
           messages: [
-            { role: "system", content: SYSTEM_PROMPT },
+            { role: "system", content: SYSTEM_PROMPT + OLLAMA_NO_THINK_SUFFIX },
             { role: "user", content: `Product: "${product.name}" on ${product.platform}` },
           ],
           stream: false,

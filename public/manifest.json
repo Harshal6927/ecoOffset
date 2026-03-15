@@ -33,7 +33,8 @@
     "*://*.apple.com/*",
     "*://*.bhphotovideo.com/*",
     "*://*.microcenter.com/*",
-    "http://localhost:11434/*"
+    "http://localhost:11434/*",
+    "https://generativelanguage.googleapis.com/*"
   ],
   "background": {
     "service_worker": "background.js"
