@@ -11,6 +11,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@google/genai": "^1.45.0",
     "@tailwindcss/vite": "^4.2.1",
     "ollama": "^0.6.3",
     "react": "^19.2.4",
